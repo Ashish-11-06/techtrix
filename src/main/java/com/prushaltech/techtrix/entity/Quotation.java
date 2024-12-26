@@ -24,70 +24,73 @@ import lombok.Setter;
 @Table(name = "quotation")
 public class Quotation {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long quotationId;
-	
-	private String Quot_ID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long quotationId;
 
-	@Column(nullable = false)
-	private Long ticketId;
-	
-	private Long c_customerId;
-	private String c_Cust_ID;
-	private String c_firstName;
-	private String c_lastName;
-	private String c_aadharNumber;
-	private String c_email;
-	private String c_phoneNumber;
-	private String c_address;
-	private String c_zipCode;
-	private CustomerType c_customerType;
-	private String c_companyName;
-	private Boolean c_isPremium;
+    private String Quot_ID;
 
-	@Column(nullable = false)
-	private Long createdBy;
+    @Column(nullable = false)
+    private Long ticketId;
 
-	@CreationTimestamp
-	private LocalDateTime quotationDate;
+    private Long c_customerId;
+    private String c_Cust_ID;
+    private String c_firstName;
+    private String c_lastName;
+    private String c_aadharNumber;
+    private String c_email;
+    private String c_phoneNumber;
+    private String c_address;
+    private String c_zipCode;
+    private CustomerType c_customerType;
+    private String c_companyName;
+    private Boolean c_isPremium;
 
-	@Column(nullable = false)
-	private Double totalAmount;
-	
-	private Double total18GstTax;
-	private Double total28GstTax;
-	private Double totalTax;
+    @Column(nullable = false)
+    private Long createdBy;
 
-	@Column(nullable = false)
-	private Long finalAmount;
+    @CreationTimestamp
+    private LocalDateTime quotationDate;
 
-	@Enumerated(EnumType.STRING)
-	@Column(columnDefinition = "ENUM('Initiated', 'Pending', 'Approved', 'Rejected') DEFAULT 'Pending'")
-	private Status status = Status.Pending;
+    @Column(nullable = false)
+    private Double totalAmount;
 
-	@Lob
-	private String comments;
+    private Double total18GstTax;
+    private Double total28GstTax;
+    private Double totalTax;
 
-	@Column
-	private String taxes;
-	
-	@Column
-	private String delivery;
-	
-	@Column
-	private String payment;
-	
-	@Column
-	private String warrantyOrSupport;
-	
-	@Column
-	private String transport;
-	
-	@CreationTimestamp
-	private LocalDateTime createdDate;
+    @Column(nullable = false)
+    private Long finalAmount;
 
-	public enum Status {
-		Initiated, Pending, Approved, Rejected
-	}
+    @Column(nullable = false)
+    private Integer validity;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "ENUM('Initiated', 'Pending', 'Approved', 'Rejected') DEFAULT 'Pending'")
+    private Status status = Status.Pending;
+
+    @Lob
+    private String comments;
+
+    @Column
+    private String taxes;
+
+    @Column
+    private String delivery;
+
+    @Column
+    private String payment;
+
+    @Column
+    private String warrantyOrSupport;
+
+    @Column
+    private String transport;
+
+    @CreationTimestamp
+    private LocalDateTime createdDate;
+
+    public enum Status {
+        Initiated, Pending, Approved, Rejected
+    }
 }
