@@ -18,4 +18,5 @@ public class QuotationRequest {
 	private String payment;
 	private String warrantyOrSupport;
 	private String transport;
+	private Integer validity;
 }

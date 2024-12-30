@@ -28,6 +28,7 @@ public class QuotationResponse {
 	private String payment;
 	private String warrantyOrSupport;
 	private String transport;
+	private Integer validity;
 	
 	private Long c_customerId;
 	private String c_Cust_ID;

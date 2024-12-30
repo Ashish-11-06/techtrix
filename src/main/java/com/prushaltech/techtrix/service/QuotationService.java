@@ -44,11 +44,12 @@ public class QuotationService {
 			quotation.setTicketId(request.getTicketId());
 			quotation.setCreatedBy(request.getCreatedBy());
 			quotation.setComments(request.getComments());
-			quotation.setTaxes("Inclusive in quotation");
-			quotation.setDelivery("3 or 4 days");
-			quotation.setPayment("100 % advance");
-			quotation.setWarrantyOrSupport("As per principal");
-			quotation.setTransport("Ex Pune");
+			quotation.setValidity(request.getValidity());
+			quotation.setTaxes(request.getTaxes());
+			quotation.setDelivery(request.getDelivery());
+			quotation.setPayment(request.getPayment());
+			quotation.setWarrantyOrSupport(request.getWarrantyOrSupport());
+			quotation.setTransport(request.getTransport());
 			quotation.setTotalTax(0.0d);
 			quotation.setTotal18GstTax(0.0d);
 			quotation.setTotal28GstTax(0.0d);
@@ -58,6 +59,7 @@ public class QuotationService {
 
 			if (request.getTicketId() != null) {
 				Customer c = customerRepository.findByTicketId(request.getTicketId());
+			System.out.println(c);
 				if (c != null) {
 					quotation.setC_customerId(c.getCustomerId());
 					quotation.setC_Cust_ID(c.getCust_ID());
@@ -72,6 +74,8 @@ public class QuotationService {
 					quotation.setC_companyName(c.getCompanyName());
 					quotation.setC_isPremium(c.getIsPremium());
 				}
+			}else {
+				System.out.println("jkjkjkjkjkjkjkj");
 			}
 
 			Quotation savedQuotation = quotationRepository.save(quotation);
@@ -87,6 +91,7 @@ public class QuotationService {
 		Quotation quotation = quotationRepository.findById(quotationId)
 				.orElseThrow(() -> new ResourceNotFoundException("Quotation not found"));
 		if (request.getTicketId() != null) {
+			System.out.println("found ticket id " + request.getTicketId());
 			quotation.setTicketId(request.getTicketId());
 			Customer c = customerRepository.findByTicketId(request.getTicketId());
 			if (c != null) {
@@ -112,6 +117,8 @@ public class QuotationService {
 			quotation.setTaxes(request.getTaxes());
 		if (request.getDelivery() != null)
 			quotation.setDelivery(request.getDelivery());
+		if (request.getValidity() != null)
+			quotation.setValidity(request.getValidity());
 		if (request.getPayment() != null)
 			quotation.setPayment(request.getPayment());
 		if (request.getWarrantyOrSupport() != null)

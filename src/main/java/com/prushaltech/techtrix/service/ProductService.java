@@ -42,6 +42,7 @@ public class ProductService {
 		product.setPartCode(request.getPartCode());
 		product.setDescription(request.getDescription());
 		product.setPrice(request.getPrice());
+		product.setSerialNo(request.getSerialNo());
 		product.setQuantity(request.getQuantity() == null ? 0 : request.getQuantity());
 		product.setUnitOfMeasurement(request.getUnitOfMeasurement() == null ? "Nos" : request.getUnitOfMeasurement());
 		product.setHsnCode(request.getHsnCode());

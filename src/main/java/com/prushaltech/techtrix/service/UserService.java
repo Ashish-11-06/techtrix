@@ -46,26 +46,47 @@ public class UserService {
 	}
 	
 	public LoginUserResponse loginUser(LoginUserRequest userRequest) {
-		LoginUserResponse loginUserResponse = new LoginUserResponse();
-		if (!userRepository.existsByEmail(userRequest.getEmail())) {
-			loginUserResponse.setHttpStatus(HttpStatus.NOT_FOUND);
-			loginUserResponse.setMessage("Email ["+userRequest.getEmail()+"] not found");
-			loginUserResponse.setUserContent("Content Not Found");
-		} else {
-			User user = userRepository.findByEmail(userRequest.getEmail()).get();
-			if(!passwordEncoder.matches(userRequest.getPassword(), user.getPasswordHash())) {
-				loginUserResponse.setHttpStatus(HttpStatus.UNAUTHORIZED);
-				loginUserResponse.setMessage("Email ["+userRequest.getEmail()+"] found but password incorrect");
-				loginUserResponse.setUserContent("Content Unauthorized");
-			} else {
-				loginUserResponse.setHttpStatus(HttpStatus.OK);
-				loginUserResponse.setMessage("Login successful");
-				loginUserResponse.setUserContent(modelMapper.map(userRepository.save(user), UserResponse.class));
-			}
-		}
-		
-		return loginUserResponse;
+	    // Initialize response object
+	    LoginUserResponse loginUserResponse = new LoginUserResponse();
+	    
+	    Optional<User> optionalUser = userRepository.findByEmail(userRequest.getEmail());
+	    
+	    if (optionalUser.isEmpty()) {
+	        // User not found
+	        loginUserResponse.setHttpStatus(HttpStatus.NOT_FOUND);
+	        loginUserResponse.setMessage("Email [" + userRequest.getEmail() + "] not found");
+	        loginUserResponse.setUserContent("Content Not Found");
+	        return loginUserResponse;  // Return early to avoid further processing
+	    }
+	    
+	    User user = optionalUser.get();
+	    
+	 // Check if the user is active
+	    if (!user.getIsActive()) { 
+	        loginUserResponse.setHttpStatus(HttpStatus.FORBIDDEN);
+	        loginUserResponse.setMessage("Email [" + userRequest.getEmail() + "] is not active");
+	        loginUserResponse.setUserContent("User is inactive");
+	        return loginUserResponse;  // Return early if the user is inactive
+	    }
+
+	    
+	    // Check for incorrect password
+	    if (!passwordEncoder.matches(userRequest.getPassword(), user.getPasswordHash())) {
+	        loginUserResponse.setHttpStatus(HttpStatus.UNAUTHORIZED);
+	        loginUserResponse.setMessage("Email [" + userRequest.getEmail() + "] found but password incorrect");
+	        loginUserResponse.setUserContent("Content Unauthorized");
+	        return loginUserResponse;  // Return early to avoid unnecessary logic
+	    }
+	    
+	    // Successful login
+	    loginUserResponse.setHttpStatus(HttpStatus.OK);
+	    loginUserResponse.setMessage("Login successful");
+	    // Map user to UserResponse (perform mapping only once)
+	    loginUserResponse.setUserContent(modelMapper.map(user, UserResponse.class));
+	    
+	    return loginUserResponse;
 	}
+
 
 	public UserResponse updateUser(Long userId, UserRequest userRequest) {
 		User existingUser = userRepository.findById(userId)
