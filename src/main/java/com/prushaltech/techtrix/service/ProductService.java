@@ -10,6 +10,7 @@ import com.prushaltech.techtrix.dto.ProductResponse;
 import com.prushaltech.techtrix.entity.Customer;
 import com.prushaltech.techtrix.entity.Product;
 import com.prushaltech.techtrix.entity.Product.ProductType;
+import com.prushaltech.techtrix.exception.ResourceAlreadyExistsException;
 import com.prushaltech.techtrix.exception.ResourceNotFoundException;
 import com.prushaltech.techtrix.repository.CustomerRepository;
 import com.prushaltech.techtrix.repository.ProductRepository;
@@ -36,6 +37,12 @@ public class ProductService {
 		 * request.getCustomerId()); }
 		 */
 
+		boolean productExists = productRepository.existsByModelNoAndDescriptionAndBrand(
+				request.getModelNo(), request.getDescription(), request.getBrand());
+		if (productExists) {
+			throw new IllegalArgumentException("Product already exists with the same model number, description, and brand.");
+		}
+		
 		Product product = new Product();
 		product.setBrand(request.getBrand());
 		product.setModelNo(request.getModelNo());
