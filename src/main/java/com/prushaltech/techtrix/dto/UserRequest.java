@@ -18,4 +18,5 @@ public class UserRequest {
 	private String password;
 	private User.Role role;
 	private User.UserType userType;
+	private Boolean isActive;
 }

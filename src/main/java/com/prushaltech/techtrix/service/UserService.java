@@ -84,6 +84,8 @@ public class UserService {
 	    // Map user to UserResponse (perform mapping only once)
 	    loginUserResponse.setUserContent(modelMapper.map(user, UserResponse.class));
 	    
+	    System.out.println(loginUserResponse);
+	    
 	    return loginUserResponse;
 	}
 
