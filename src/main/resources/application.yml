@@ -3,9 +3,9 @@ spring:
     name: techtrix
       
   datasource:
-    url: jdbc:mysql://localhost:3306/techtrix_db
-    username: root
-    password: Namo@1234
+    url: jdbc:mysql://localhost:3306/techtrix_db_test
+    username: techtrix_user
+    password: Indeed@techtrix01
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -38,8 +38,18 @@ spring:
           auth: true
           starttls:
             enable: true
-            
+
 logging:
+  file:
+    path: /home/techtrix/app-logs
+    name: TechtrixApp.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: TechtrixApp-%d{yyyy-MM-dd}.%i.log
+      max-file-size: 1MB
+      total-size-cap: 50MB
+      max-history: 30
+      clean-history-on-start: true
   level:
     org:
       springframework:
