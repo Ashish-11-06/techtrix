@@ -1,5 +1,6 @@
 package com.prushaltech.techtrix.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,53 +40,105 @@ public class QuotationProductService {
 	@Autowired
 	private ModelMapperEx modelMapper;
 
-	public QuotationProductResponse createQuotationProduct(QuotationProductRequest request) {
-		QuotationProduct qP = quotationProductRepository.findByQuotationIdAndProductId(request.getQuotationId(),
-				request.getProductId());
-		Quotation quotation = quotationRepository.findById(request.getQuotationId()).orElseThrow(
-				() -> new ResourceNotFoundException("Quotation not found with id = " + request.getQuotationId()));
-		Product product = productRepository.findById(request.getProductId()).orElseThrow(
-				() -> new ResourceNotFoundException("Product not found with id = " + request.getProductId()));
+//	public QuotationProductResponse createQuotationProduct(QuotationProductRequest request) {
+//		QuotationProduct qP = quotationProductRepository.findByQuotationIdAndProductId(request.getQuotationId(),
+//				request.getProductId());
+//		Quotation quotation = quotationRepository.findById(request.getQuotationId()).orElseThrow(
+//				() -> new ResourceNotFoundException("Quotation not found with id = " + request.getQuotationId()));
+//		Product product = productRepository.findById(request.getProductId()).orElseThrow(
+//				() -> new ResourceNotFoundException("Product not found with id = " + request.getProductId()));
+//
+//		if (qP != null) {
+//			if (product.getProductType() == ProductType.Service)
+//				throw new IllegalArgumentException("Cannot add Product of Service type again");
+//			product.setQuantity(product.getQuantity() + 1);
+//			product = productRepository.save(product);
+//		}
+//
+//		Integer gst = 0;
+//		if (product.getGst() != null)
+//			gst = product.getGst();
+//
+//		Integer quantity = 1;
+//		if (product.getProductType() == ProductType.Hardware) {
+//			quantity = product.getQuantity();
+//		}
+//
+//		Double totalGst = quantity * product.getPrice().doubleValue() * (gst / 100.0);
+//
+//		if (gst == 18)
+//			quotation.setTotal18GstTax(quotation.getTotal18GstTax() + totalGst);
+//		else if (gst == 28)
+//			quotation.setTotal28GstTax(quotation.getTotal28GstTax() + totalGst);
+//
+//		quotation.setTotalTax(quotation.getTotalTax() + totalGst);
+//		quotation.setTotalAmount(quotation.getTotalAmount() + quantity * product.getPrice().doubleValue());
+//		quotation.setFinalAmount(Math.round(quotation.getTotalAmount() + quotation.getTotalTax()));
+//		quotation.setStatus(Status.Pending);
+//		quotationRepository.save(quotation);
+//
+//		if (qP == null) {
+//			QuotationProduct quotationProduct = new QuotationProduct();
+//			quotationProduct.setQuotationId(quotation.getQuotationId());
+//			quotationProduct.setProductId(product.getProductId());
+//
+//			return modelMapper.map(quotationProductRepository.save(quotationProduct), QuotationProductResponse.class);
+//		} else {
+//			return modelMapper.map(qP, QuotationProductResponse.class);
+//		}
+//	}
+	
+	public List<QuotationProductResponse> createQuotationProducts(List<QuotationProductRequest> requests) {
+	    List<QuotationProductResponse> responses = new ArrayList<>();
 
-		if (qP != null) {
-			if (product.getProductType() == ProductType.Service)
-				throw new IllegalArgumentException("Cannot add Product of Service type again");
-			product.setQuantity(product.getQuantity() + 1);
-			product = productRepository.save(product);
-		}
+	    for (QuotationProductRequest request : requests) {
+	        QuotationProduct qP = quotationProductRepository.findByQuotationIdAndProductId(
+	                request.getQuotationId(), request.getProductId());
 
-		Integer gst = 0;
-		if (product.getGst() != null)
-			gst = product.getGst();
+	        Quotation quotation = quotationRepository.findById(request.getQuotationId()).orElseThrow(
+	                () -> new ResourceNotFoundException("Quotation not found with id = " + request.getQuotationId()));
+	        
+	        Product product = productRepository.findById(request.getProductId()).orElseThrow(
+	                () -> new ResourceNotFoundException("Product not found with id = " + request.getProductId()));
 
-		Integer quantity = 1;
-		if (product.getProductType() == ProductType.Hardware) {
-			quantity = product.getQuantity();
-		}
+	        if (qP != null) {
+	            if (product.getProductType() == ProductType.Service) {
+	                throw new IllegalArgumentException("Cannot add Product of Service type again");
+	            }
+	            product.setQuantity(product.getQuantity() + 1);
+	            product = productRepository.save(product);
+	        }
 
-		Double totalGst = quantity * product.getPrice().doubleValue() * (gst / 100.0);
+	        Integer gst = (product.getGst() != null) ? product.getGst() : 0;
+	        Integer quantity = (product.getProductType() == ProductType.Hardware) ? product.getQuantity() : 1;
+	        Double totalGst = quantity * product.getPrice().doubleValue() * (gst / 100.0);
 
-		if (gst == 18)
-			quotation.setTotal18GstTax(quotation.getTotal18GstTax() + totalGst);
-		else if (gst == 28)
-			quotation.setTotal28GstTax(quotation.getTotal28GstTax() + totalGst);
+	        if (gst == 18) {
+	            quotation.setTotal18GstTax(quotation.getTotal18GstTax() + totalGst);
+	        } else if (gst == 28) {
+	            quotation.setTotal28GstTax(quotation.getTotal28GstTax() + totalGst);
+	        }
 
-		quotation.setTotalTax(quotation.getTotalTax() + totalGst);
-		quotation.setTotalAmount(quotation.getTotalAmount() + quantity * product.getPrice().doubleValue());
-		quotation.setFinalAmount(Math.round(quotation.getTotalAmount() + quotation.getTotalTax()));
-		quotation.setStatus(Status.Pending);
-		quotationRepository.save(quotation);
+	        quotation.setTotalTax(quotation.getTotalTax() + totalGst);
+	        quotation.setTotalAmount(quotation.getTotalAmount() + quantity * product.getPrice().doubleValue());
+	        quotation.setFinalAmount(Math.round(quotation.getTotalAmount() + quotation.getTotalTax()));
+	        quotation.setStatus(Status.Pending);
+	        quotationRepository.save(quotation);
 
-		if (qP == null) {
-			QuotationProduct quotationProduct = new QuotationProduct();
-			quotationProduct.setQuotationId(quotation.getQuotationId());
-			quotationProduct.setProductId(product.getProductId());
+	        if (qP == null) {
+	            QuotationProduct quotationProduct = new QuotationProduct();
+	            quotationProduct.setQuotationId(quotation.getQuotationId());
+	            quotationProduct.setProductId(product.getProductId());
 
-			return modelMapper.map(quotationProductRepository.save(quotationProduct), QuotationProductResponse.class);
-		} else {
-			return modelMapper.map(qP, QuotationProductResponse.class);
-		}
+	            responses.add(modelMapper.map(quotationProductRepository.save(quotationProduct), QuotationProductResponse.class));
+	        } else {
+	            responses.add(modelMapper.map(qP, QuotationProductResponse.class));
+	        }
+	    }
+
+	    return responses;
 	}
+
 
 	public QuotationResponse updateQuotationProduct(Long qId, Long pId, ProductRequest request) {
 		Quotation quotation = quotationRepository.findById(qId)

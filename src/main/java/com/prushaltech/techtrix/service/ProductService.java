@@ -35,7 +35,33 @@ public class ProductService {
 		 * ResourceNotFoundException("Customer not found with Id: " +
 		 * request.getCustomerId()); }
 		 */
+		
+        String brand = request.getBrand();
+        String modelNo = request.getModelNo();
+        
+        String unitOfMeasurement = request.getUnitOfMeasurement();
+        
+        if (unitOfMeasurement != null && !unitOfMeasurement.isEmpty()) {
+            unitOfMeasurement = unitOfMeasurement.substring(0, 1).toUpperCase() + unitOfMeasurement.substring(1).toLowerCase();
+        }
 
+        
+        // Check if the brand already exists in the database
+        List<Product> existingProductsb = productRepository.findByBrand(brand);
+        List<Product> existingProductsm = productRepository.findByModelNo(modelNo);
+        
+        System.out.println("products: " + existingProductsm);
+        
+        if (!existingProductsb.isEmpty()) {
+            // Use the existing brand from the database
+            brand = existingProductsb.get(0).getBrand();
+        }
+        if (!existingProductsm.isEmpty()) {
+            // Use the existing brand from the database
+            modelNo = existingProductsm.get(0).getModelNo();
+        }
+        
+        
 		if(request.getCustomerId() == null) {
 			boolean productExists = productRepository.existsByModelNoAndDescriptionAndBrand(
 					request.getModelNo(), request.getDescription(), request.getBrand());
@@ -48,14 +74,14 @@ public class ProductService {
 					request.getModelNo(), request.getDescription(), request.getBrand());
 			if (!productExists) {
 				Product product1 = new Product();
-				product1.setBrand(request.getBrand());
-				product1.setModelNo(request.getModelNo());
+				product1.setBrand(brand);
+				product1.setModelNo(modelNo);
 				product1.setPartCode(request.getPartCode());
 				product1.setDescription(request.getDescription());
 //				product1.setPrice(request.getPrice());
 //				product1.setSerialNo(request.getSerialNo());
 				product1.setQuantity(request.getQuantity() == null ? 0 : 1);
-				product1.setUnitOfMeasurement(request.getUnitOfMeasurement() == null ? "Nos" : request.getUnitOfMeasurement());
+				product1.setUnitOfMeasurement(request.getUnitOfMeasurement() == null ? "Nos" : unitOfMeasurement);
 				product1.setHsnCode(request.getHsnCode());
 				product1.setIsSerialNoAllowed(request.getIsSerialNoAllowed() == null ? false : request.getIsSerialNoAllowed());
 				product1.setIsGstAvailable(request.getIsGstAvailable() == null ? false : request.getIsGstAvailable());
@@ -71,14 +97,14 @@ public class ProductService {
 		
 				
 		Product product = new Product();
-		product.setBrand(request.getBrand());
-		product.setModelNo(request.getModelNo());
+		product.setBrand(brand);
+		product.setModelNo(modelNo);
 		product.setPartCode(request.getPartCode());
 		product.setDescription(request.getDescription());
 		product.setPrice(request.getPrice());
 		product.setSerialNo(request.getSerialNo());
 		product.setQuantity(request.getQuantity() == null ? 0 : request.getQuantity());
-		product.setUnitOfMeasurement(request.getUnitOfMeasurement() == null ? "Nos" : request.getUnitOfMeasurement());
+		product.setUnitOfMeasurement(request.getUnitOfMeasurement() == null ? "Nos" : unitOfMeasurement);
 		product.setHsnCode(request.getHsnCode());
 		product.setIsSerialNoAllowed(request.getIsSerialNoAllowed() == null ? false : request.getIsSerialNoAllowed());
 		product.setIsGstAvailable(request.getIsGstAvailable() == null ? false : request.getIsGstAvailable());

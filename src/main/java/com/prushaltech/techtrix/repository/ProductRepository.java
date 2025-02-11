@@ -22,6 +22,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByNullCustomerIds();
 
     List<Product> findByProductType(ProductType productType);
+    
+    List<Product> findByBrand(String brand);
+    
+//    List<Product> findByUnitOfMeasurement(String)
+    
+    List<Product> findByModelNo(String modelNo);
 
     @Query("select count(p) > 0 from Product p where p.customerId is null and p.modelNo = ?1 and p.description = ?2 and p.brand = ?3")
     boolean existsByModelNoAndDescriptionAndBrand(String modelNo, String description, String brand);

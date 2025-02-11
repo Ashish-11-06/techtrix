@@ -1,5 +1,7 @@
 package com.prushaltech.techtrix.rest;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,11 +25,18 @@ public class QuotationProductController {
 	@Autowired
 	private QuotationProductService quotationProductService;
 
+//	@PostMapping("/add")
+//	public ResponseEntity<QuotationProductResponse> createQuotationProduct(
+//			@RequestBody QuotationProductRequest request) {
+//		return ResponseEntity.ok(quotationProductService.createQuotationProduct(request));
+//	}
+	
 	@PostMapping("/add")
-	public ResponseEntity<QuotationProductResponse> createQuotationProduct(
-			@RequestBody QuotationProductRequest request) {
-		return ResponseEntity.ok(quotationProductService.createQuotationProduct(request));
+	public ResponseEntity<List<QuotationProductResponse>> createQuotationProducts(
+	        @RequestBody List<QuotationProductRequest> requests) {
+	    return ResponseEntity.ok(quotationProductService.createQuotationProducts(requests));
 	}
+
 	
 	@PutMapping("/update/quotation/{qId}/product/{pId}")
 	public ResponseEntity<QuotationResponse> updateQuotationProduct(

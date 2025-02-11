@@ -29,6 +29,9 @@ public class CustomerService {
 		if (customerRepository.existsByEmail(customerRequest.getEmail())) {
 			throw new IllegalArgumentException("Email is already in use");
 		}
+		if (customerRepository.existsByCompanyName(customerRequest.getCompanyName())) {
+			throw new IllegalArgumentException("Company is already in use");
+		}
 		Customer customer = modelMapper.map(customerRequest, Customer.class);
 		Customer savedCustomer = customerRepository.save(customer);
 		savedCustomer.setCust_ID(GenerateID.generateCustomerId(savedCustomer.getCustomerId()));

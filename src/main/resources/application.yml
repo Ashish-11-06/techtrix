@@ -3,7 +3,7 @@ spring:
     name: techtrix
       
   datasource:
-    url: jdbc:mysql://localhost:3306/techtrix_db_test
+    url: jdbc:mysql://localhost:3306/techtrix_db
     username: techtrix_user
     password: Indeed@techtrix01
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -26,6 +26,15 @@ spring:
       - PUT
       - DELETE
       - OPTIONS
+
+  management:
+    endpoints:
+      jmx:
+        exposure:
+          include: "*"
+    # metrics:
+    #   export:
+    #     enabled: true
 
   mail:
     host: smtp.gmail.com
