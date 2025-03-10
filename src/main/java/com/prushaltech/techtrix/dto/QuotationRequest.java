@@ -1,5 +1,7 @@
 package com.prushaltech.techtrix.dto;
 
+import java.time.LocalDateTime;
+
 import com.prushaltech.techtrix.entity.Quotation.Status;
 
 import lombok.Getter;
@@ -19,4 +21,5 @@ public class QuotationRequest {
 	private String warrantyOrSupport;
 	private String transport;
 	private Integer validity;
+	private LocalDateTime quotationDate;
 }

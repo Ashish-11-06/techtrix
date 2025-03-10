@@ -174,8 +174,10 @@ public class ProductService {
 			product.setCustomerId(request.getCustomerId());
 		if (request.getProductType() != null)
 			product.setProductType(request.getProductType());
-
+		
+		System.out.println(product);
 		Product updatedProduct = productRepository.save(product);
+		System.out.println(updatedProduct);
 		return modelMapper.map(updatedProduct, ProductResponse.class);
 	}
 

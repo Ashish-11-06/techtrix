@@ -111,6 +111,8 @@ public class QuotationService {
 		}
 		if (request.getCreatedBy() != null)
 			quotation.setCreatedBy(request.getCreatedBy());
+		if (request.getQuotationDate() != null)
+			quotation.setQuotationDate(request.getQuotationDate());
 		if (request.getComments() != null)
 			quotation.setComments(request.getComments());
 		if (request.getTaxes() != null)

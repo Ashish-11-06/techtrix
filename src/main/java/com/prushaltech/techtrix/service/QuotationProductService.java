@@ -110,19 +110,23 @@ public class QuotationProductService {
 	        }
 
 	        Integer gst = (product.getGst() != null) ? product.getGst() : 0;
-	        Integer quantity = (product.getProductType() == ProductType.Hardware) ? product.getQuantity() : 1;
-	        Double totalGst = quantity * product.getPrice().doubleValue() * (gst / 100.0);
+//	        Integer quantity = (product.getProductType() == ProductType.Hardware) ? product.getQuantity() : 1;
+	        Integer quantity = product.getQuantity();
+//	        Double totalGst = quantity * product.getPrice().doubleValue() * (gst / 100.0);
+	        Double totalGst = quantity * (product.getPrice() != null ? product.getPrice().doubleValue() : 0.0) * (gst / 100.0);
 
-	        if (gst == 18) {
+	        if (gst == 18){
 	            quotation.setTotal18GstTax(quotation.getTotal18GstTax() + totalGst);
 	        } else if (gst == 28) {
 	            quotation.setTotal28GstTax(quotation.getTotal28GstTax() + totalGst);
 	        }
 
 	        quotation.setTotalTax(quotation.getTotalTax() + totalGst);
-	        quotation.setTotalAmount(quotation.getTotalAmount() + quantity * product.getPrice().doubleValue());
+//	        quotation.setTotalAmount(quotation.getTotalAmount() + quantity * product.getPrice().doubleValue());
+	        quotation.setTotalAmount(quotation.getTotalAmount() + quantity * (product.getPrice() != null ? product.getPrice().doubleValue() : 0.0));
 	        quotation.setFinalAmount(Math.round(quotation.getTotalAmount() + quotation.getTotalTax()));
 	        quotation.setStatus(Status.Pending);
+	        System.out.println(quotation);
 	        quotationRepository.save(quotation);
 
 	        if (qP == null) {
@@ -146,6 +150,7 @@ public class QuotationProductService {
 		ProductResponse product = productService.getProductById(pId);
 
 		ProductResponse updatedProduct = productService.updateProduct(pId, request);
+		
 		Integer gst = 0, updatedGst = 0;
 		if (product.getGst() != null)
 			gst = product.getGst();
@@ -158,17 +163,20 @@ public class QuotationProductService {
 			updatedQuantity = updatedProduct.getQuantity() == 0 ? 1 : updatedProduct.getQuantity();
 		}
 
-		Double totalGst = quantity * product.getPrice().doubleValue() * (gst / 100.0);
-		Double updatedTotalGst = updatedQuantity * updatedProduct.getPrice().doubleValue() * (updatedGst / 100.0);
+//		Double totalGst = quantity * product.getPrice().doubleValue() * (gst / 100.0);
+		Double totalGst = quantity * (product.getPrice() != null ? product.getPrice().doubleValue() : 0.0) * (gst / 100.0);
+//		Double updatedTotalGst = updatedQuantity * updatedProduct.getPrice().doubleValue() * (updatedGst / 100.0);
+		Double updatedTotalGst = updatedQuantity * (updatedProduct.getPrice() != null ? updatedProduct.getPrice().doubleValue() : 0.0) * (updatedGst / 100.0);
 
+		
 		if (gst == 18)
 			quotation.setTotal18GstTax(quotation.getTotal18GstTax() - totalGst + updatedTotalGst);
 		else if (product.getGst() == 28)
 			quotation.setTotal28GstTax(quotation.getTotal28GstTax() - totalGst + updatedTotalGst);
 
 		quotation.setTotalTax(quotation.getTotalTax() - totalGst + updatedTotalGst);
-		quotation.setTotalAmount(quotation.getTotalAmount() - quantity * product.getPrice().doubleValue()
-				+ updatedQuantity * updatedProduct.getPrice().doubleValue());
+		quotation.setTotalAmount(quotation.getTotalAmount() - quantity * (product.getPrice() != null ? product.getPrice().doubleValue() : 0.0)
+				+ updatedQuantity * (updatedProduct.getPrice() != null ? updatedProduct.getPrice().doubleValue() : 0.0));
 		quotation.setFinalAmount(Math.round(quotation.getTotalAmount() + quotation.getTotalTax()));
 		Quotation updatedQuotation = quotationRepository.save(quotation);
 

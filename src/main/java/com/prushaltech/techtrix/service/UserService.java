@@ -91,20 +91,47 @@ public class UserService {
 
 
 	public UserResponse updateUser(Long userId, UserRequest userRequest) {
-		User existingUser = userRepository.findById(userId)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found with Id: " + userId));
+	    // Find the existing user or throw an exception if not found
+	    User existingUser = userRepository.findById(userId)
+	            .orElseThrow(() -> new ResourceNotFoundException("User not found with Id: " + userId));
 
-		modelMapper.map(userRequest, existingUser); // Update user details
-		if (userRequest.getPassword() != null) {
-			existingUser.setPasswordHash(passwordEncoder.encode(userRequest.getPassword())); // Rehash the password
-		}
-		return modelMapper.map(userRepository.save(existingUser), UserResponse.class);
-	}
+	    // Update only the fields that are provided in the userRequest
+	    if (userRequest.getFirstName() != null) {
+	        existingUser.setFirstName(userRequest.getFirstName());
+	    }
+	    if (userRequest.getLastName() != null) {
+	        existingUser.setLastName(userRequest.getLastName());
+	    }
+	    if (userRequest.getEmail() != null) {
+	        existingUser.setEmail(userRequest.getEmail());
+	    }
+	    if (userRequest.getPhoneNumber() != null) {
+	        existingUser.setPhoneNumber(userRequest.getPhoneNumber());
+	    }
+	    if (userRequest.getAddress() != null) {
+	        existingUser.setAddress(userRequest.getAddress());
+	    }
+	    if (userRequest.getZipCode() != null) {
+	        existingUser.setZipCode(userRequest.getZipCode());
+	    }
+	    if (userRequest.getPassword() != null) {
+	        existingUser.setPasswordHash(passwordEncoder.encode(userRequest.getPassword())); // Rehash the password
+	    }
+	    if (userRequest.getRole() != null) {
+	        existingUser.setRole(userRequest.getRole());
+	    }
+	    if (userRequest.getUserType() != null) {
+	        existingUser.setUserType(userRequest.getUserType());
+	    }
+	    if (userRequest.getIsActive() != null) {
+	        existingUser.setIsActive(userRequest.getIsActive());
+	    }
 
-	public List<UserResponse> getUserByRole(Role role) {
-		return userRepository.findAllByRole(role).stream().map(user -> modelMapper.map(user, UserResponse.class))
-				.collect(Collectors.toList());
+	    // Save the updated user and map it to UserResponse
+	    User updatedUser = userRepository.save(existingUser);
+	    return modelMapper.map(updatedUser, UserResponse.class);
 	}
+	
 	
 	public UserResponse getUserById(Long userId) {
 		User user = userRepository.findById(userId)
@@ -132,5 +159,12 @@ public class UserService {
 	public Page<UserResponse> getAllUsersPageable(Pageable pageable) {
 		return userRepository.findAll(pageable).map(user -> modelMapper.map(user, UserResponse.class));
 	}
+	
+	public List<UserResponse> getUserByRole(Role role) {
+		return userRepository.findAllByRole(role).stream().map(user -> modelMapper.map(user, UserResponse.class))
+				.collect(Collectors.toList());
+	}
+
+	
 
 }
