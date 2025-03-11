@@ -20,6 +20,9 @@ COPY --from=builder /app/target/techtrix-0.0.1-SNAPSHOT.war ROOT.war
 # Expose Tomcat's default port
 EXPOSE 8080
 
+# Set Tomcat to use Render's assigned port dynamically
+ENV CATALINA_OPTS="-Dserver.port=8080"
+
 # Start Tomcat
 CMD ["catalina.sh", "run"]
 
