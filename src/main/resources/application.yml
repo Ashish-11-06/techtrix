@@ -13,7 +13,7 @@ spring:
     hikari:
       data-source-properties:
         sslMode: VERIFY_CA
-        trustCertificateKeyStoreUrl: file:/C:/certs/bopo_ca.jks
+        trustCertificateKeyStoreUrl: classpath:bopo_ca.jks
         trustCertificateKeyStorePassword: changeit
         trustCertificateKeyStoreType: JKS
 
