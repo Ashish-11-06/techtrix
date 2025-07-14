@@ -1,26 +1,21 @@
 server:
   port: 8080
+  servlet:
+    context-path: /
 
 spring:
   application:
     name: techtrix
-
   datasource:
-    url: jdbc:mysql://mysql-3c5eae90-bopo.i.aivencloud.com:27841/tick_tool_db?useSSL=true&requireSSL=true&verifyServerCertificate=true&serverTimezone=UTC&sslMode=VERIFY_CA
-    username: avnadmin
-    password: AVNS_jV-6OHOWR4nwmmQvqPy
+    url: jdbc:mysql://localhost:3306/ticket_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ticktool
+    password: Ticket@123
     driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      data-source-properties:
-        sslMode: VERIFY_CA
-        trustCertificateKeyStoreUrl: classpath:bopo_ca.jks
-        trustCertificateKeyStorePassword: changeit
-        trustCertificateKeyStoreType: JKS
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: false
+    show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -29,7 +24,7 @@ spring:
     cors:
       allow-credentials: true
       allowed-origins:
-        - https://crm.techtrix.in
+        - http://localhost:3000
       allowed-methods:
         - GET
         - POST
@@ -42,15 +37,12 @@ spring:
       jmx:
         exposure:
           include: "*"
-    # metrics:
-    #   export:
-    #     enabled: true
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: nitis576ni@gmail.com
-    password: uzma slyc uoim cckb
+    username: your_email@gmail.com
+    password: your_app_password
     properties:
       mail:
         smtp:
@@ -60,7 +52,7 @@ spring:
 
 logging:
   file:
-    path: /home/techtrix/app-logs
+    path: ./logs
     name: TechtrixApp.log
   logback:
     rollingpolicy:
@@ -74,3 +66,4 @@ logging:
       springframework:
         web: trace
     apache: trace
+
